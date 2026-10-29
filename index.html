@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Happy Birthday Maomao!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#fff8f6; --blush:#fdeaf0; --petal:#f8d3df; --rose:#eba9bc; --dusty:#d58aa2;
+  --mauve:#8a4f66; --ink:#6e3c52; --peach:#ffd9c7;
+  --serif:"Cormorant Garamond",Georgia,serif; --sans:"Quicksand","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--sans);color:var(--ink);
+  background:radial-gradient(ellipse at 20% 0%,#fff1f4 0%,transparent 55%),radial-gradient(ellipse at 90% 100%,#fbdbe6 0%,transparent 60%),var(--blush)}
+.paw{width:1em;height:1em;fill:currentColor;display:inline-block;vertical-align:-.12em}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:50}
+.floaters{position:fixed;inset:0;overflow:hidden;pointer-events:none}
+.floaters svg{position:absolute;bottom:-60px;color:var(--rose);opacity:.35;animation:drift linear infinite}
+@keyframes drift{to{transform:translateY(-115vh) rotate(25deg)}}
+
+main{position:relative;height:100%;padding-top:env(safe-area-inset-top)}
+.page{position:absolute;inset:0 0 88px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;text-align:center;opacity:0;visibility:hidden;transform:translateY(18px);
+  transition:opacity .7s ease,transform .7s ease,visibility 0s .7s;overflow-y:auto}
+.page.active{opacity:1;visibility:visible;transform:none;transition:opacity .7s ease,transform .7s ease}
+.page.past{transform:translateY(-18px)}
+h1,h2{font-family:var(--serif);font-style:italic;font-weight:600;color:var(--mauve);letter-spacing:.01em}
+h1{font-size:clamp(2.4rem,10vw,3.8rem);line-height:1.05}
+h2{font-size:clamp(1.8rem,7vw,2.5rem);margin-bottom:16px}
+p{font-size:clamp(1rem,3.8vw,1.15rem);line-height:1.75;max-width:28em;font-weight:500}
+.rule{display:flex;align-items:center;gap:10px;color:var(--rose);margin:10px 0 0;font-size:1.1rem}
+.rule::before,.rule::after{content:"";width:44px;height:1px;background:currentColor;opacity:.7}
+
+/* nav */
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;gap:18px;
+  padding:12px 16px calc(16px + env(safe-area-inset-bottom));z-index:10}
+.btn{font-family:var(--sans);font-weight:600;font-size:1rem;letter-spacing:.03em;cursor:pointer;
+  border:1px solid var(--dusty);border-radius:10px;padding:13px 30px;color:var(--ink);background:var(--petal);
+  box-shadow:0 6px 18px rgba(213,138,162,.25);transition:transform .2s,background .2s,box-shadow .2s}
+.btn:hover{background:#f5c3d3}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;box-shadow:none;border-color:rgba(213,138,162,.5);padding:13px 20px}
+.btn[hidden]{display:none}
+.dots{display:flex;gap:8px;align-items:center}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--rose);opacity:.4;transition:.4s}
+.dots i.on{opacity:1;transform:scale(1.5);background:var(--dusty)}
+
+/* 0 envelope */
+.env{position:relative;width:min(76vw,300px);height:196px;margin:34px 0 0;cursor:pointer;animation:bob 3.2s ease-in-out infinite;
+  filter:drop-shadow(0 14px 22px rgba(213,138,162,.35))}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.env .back{position:absolute;inset:0;background:#f3bccb;border-radius:6px}
+.env .letter{position:absolute;left:7%;right:7%;top:7%;height:82%;background:var(--cream);border-radius:3px;transition:transform .9s .3s ease;
+  display:grid;place-items:center;color:var(--rose);font-size:3rem}
+.env .front{position:absolute;inset:0;border-radius:6px;
+  background:linear-gradient(135deg,transparent 50%,#eaa6b9 50%) left/50% 100% no-repeat,linear-gradient(225deg,transparent 50%,#eaa6b9 50%) right/50% 100% no-repeat}
+.env .flap{position:absolute;left:0;right:0;top:0;height:62%;background:#f6cdd9;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .7s ease;z-index:2}
+.env .seal{position:absolute;left:50%;top:52%;width:46px;height:46px;margin:-23px;border-radius:50%;background:var(--dusty);color:#fff;z-index:3;display:grid;place-items:center;font-size:1.5rem;transition:.4s}
+.env.open .flap{transform:rotateX(180deg);z-index:0}
+.env.open .seal{opacity:0;transform:scale(1.8)}
+.env.open .letter{transform:translateY(-84px)}
+.hint{margin-top:36px;font-family:var(--serif);font-style:italic;font-size:1.25rem;color:var(--mauve);animation:pulse 2.4s infinite}
+@keyframes pulse{50%{opacity:.35}}
+
+/* 1 message */
+.msg{position:relative;background:var(--cream);border:1px solid var(--petal);border-radius:6px;padding:34px 26px 28px;max-width:420px;
+  box-shadow:0 16px 40px rgba(213,138,162,.28);margin-top:22px}
+.msg::before,.msg::after{content:"";position:absolute;top:-17px;width:34px;height:34px;background:var(--cream);
+  clip-path:polygon(0 100%,50% 0,100% 100%);border-bottom:0}
+.msg::before{left:26px;transform:rotate(-8deg)}
+.msg::after{right:26px;transform:rotate(8deg)}
+.msg p{text-align:left;white-space:pre-line;min-height:9em}
+.cursor::after{content:"";display:inline-block;width:1px;height:1.1em;background:var(--dusty);margin-left:2px;vertical-align:-.2em;animation:pulse .9s infinite}
+
+/* 2 photos */
+.stack{position:relative;width:min(68vw,270px);height:min(86vw,340px);margin:8px 0 20px;touch-action:pan-y}
+.polaroid{position:absolute;inset:0;background:#fffdfc;padding:12px 12px 54px;border-radius:3px;box-shadow:0 10px 30px rgba(150,80,105,.22);
+  transition:transform .8s cubic-bezier(.2,.9,.3,1),opacity .5s;cursor:pointer}
+.polaroid .ph{width:100%;height:100%;background:linear-gradient(160deg,var(--petal),var(--peach));display:grid;place-items:center;font-size:3rem;color:#fff;overflow:hidden}
+.polaroid img{width:100%;height:100%;object-fit:cover;display:block}
+.polaroid .cap{position:absolute;left:0;right:0;bottom:15px;color:var(--mauve);font-family:var(--serif);font-style:italic;font-size:1.25rem}
+.small{font-size:.9rem;opacity:.75;margin-top:6px}
+
+/* 3 cake */
+.cake{width:min(72vw,270px);cursor:pointer;overflow:visible;filter:drop-shadow(0 12px 18px rgba(213,138,162,.3))}
+.flame{transform-origin:center bottom;animation:flick .5s ease-in-out infinite alternate;transition:opacity .4s,transform .4s}
+.flame:nth-child(2){animation-delay:.15s}.flame:nth-child(3){animation-delay:.3s}
+@keyframes flick{to{transform:scale(1.1,.92) rotate(3deg)}}
+.out .flame{opacity:0;transform:scale(0)}
+.smoke{opacity:0}.out .smoke{animation:smoke 1.6s forwards}
+@keyframes smoke{0%{opacity:.9;transform:translateY(0)}100%{opacity:0;transform:translateY(-36px)}}
+
+/* 4 gift */
+.giftbox{width:112px;margin-bottom:8px;animation:bob 3s ease-in-out infinite}
+.code{margin:20px 0 8px;display:flex;align-items:center;gap:12px;background:var(--cream);border:1px dashed var(--dusty);border-radius:10px;padding:10px 10px 10px 20px;
+  font-family:var(--sans);font-weight:600;font-size:clamp(1rem,5vw,1.35rem);letter-spacing:.12em;color:var(--mauve);word-break:break-all;box-shadow:0 12px 30px rgba(213,138,162,.25)}
+.code .btn{padding:10px 18px;font-size:.95rem;flex:none;letter-spacing:.02em}
+.lock{filter:blur(9px);transition:filter 1.2s}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="paw" viewBox="0 0 64 64">
+    <ellipse cx="32" cy="43" rx="14" ry="11.5"/>
+    <ellipse cx="12.5" cy="29" rx="6" ry="8" transform="rotate(-22 12.5 29)"/>
+    <ellipse cx="24.5" cy="15.5" rx="6" ry="8.5" transform="rotate(-8 24.5 15.5)"/>
+    <ellipse cx="39.5" cy="15.5" rx="6" ry="8.5" transform="rotate(8 39.5 15.5)"/>
+    <ellipse cx="51.5" cy="29" rx="6" ry="8" transform="rotate(22 51.5 29)"/>
+  </symbol>
+</svg>
+
+<div class="floaters" id="floaters"></div>
+<canvas id="fx"></canvas>
+
+<main>
+  <!-- PAGE 0: ENVELOPE -->
+  <section class="page" id="p0">
+    <h1 id="coverTitle"></h1>
+    <div class="rule"><svg class="paw"><use href="#paw"/></svg></div>
+    <div class="env" id="env">
+      <div class="back"></div>
+      <div class="letter"><svg class="paw"><use href="#paw"/></svg></div>
+      <div class="front"></div><div class="flap"></div>
+      <div class="seal"><svg class="paw"><use href="#paw"/></svg></div>
+    </div>
+    <p class="hint" id="coverHint"></p>
+  </section>
+
+  <!-- PAGE 1: MESSAGE -->
+  <section class="page" id="p1">
+    <h2 id="msgTitle"></h2>
+    <div class="msg"><p id="msgText" class="cursor"></p></div>
+  </section>
+
+  <!-- PAGE 2: PHOTOS -->
+  <section class="page" id="p2">
+    <h2 id="photoTitle"></h2>
+    <div class="stack" id="stack"></div>
+    <p class="small">Tap the photos to flip through</p>
+  </section>
+
+  <!-- PAGE 3: CAKE -->
+  <section class="page" id="p3">
+    <h2 id="wishTitle"></h2>
+    <svg class="cake" id="cake" viewBox="0 0 260 240" aria-label="Birthday cake, tap to blow out the candles">
+      <g class="smoke" fill="none" stroke="#c99ab0" stroke-width="2" stroke-linecap="round"><path d="M82 38q7-10 0-20"/><path d="M130 38q7-10 0-20"/><path d="M178 38q7-10 0-20"/></g>
+      <g>
+        <g class="flame"><ellipse cx="82" cy="46" rx="7" ry="13" fill="#ffd9a8"/><ellipse cx="82" cy="50" rx="3.5" ry="7" fill="#f7a8b8"/></g>
+        <g class="flame"><ellipse cx="130" cy="46" rx="7" ry="13" fill="#ffd9a8"/><ellipse cx="130" cy="50" rx="3.5" ry="7" fill="#f7a8b8"/></g>
+        <g class="flame"><ellipse cx="178" cy="46" rx="7" ry="13" fill="#ffd9a8"/><ellipse cx="178" cy="50" rx="3.5" ry="7" fill="#f7a8b8"/></g>
+      </g>
+      <rect x="79" y="60" width="6" height="36" rx="2" fill="#fff"/><rect x="127" y="60" width="6" height="36" rx="2" fill="#fff"/><rect x="175" y="60" width="6" height="36" rx="2" fill="#fff"/>
+      <path d="M79 70l6 4M79 80l6 4M127 70l6 4M127 80l6 4M175 70l6 4M175 80l6 4" stroke="#f3bccb" stroke-width="2"/>
+      <!-- cat ears on top tier -->
+      <polygon points="52,100 60,70 82,98" fill="#f6cdd9"/><polygon points="58,98 62,80 74,97" fill="#fde6ec"/>
+      <polygon points="208,100 200,70 178,98" fill="#f6cdd9"/><polygon points="202,98 198,80 186,97" fill="#fde6ec"/>
+      <rect x="48" y="94" width="164" height="54" rx="10" fill="#fff8f6"/>
+      <path d="M48 112q13 14 26 0t26 0 26 0 26 0 26 0 26 0v-8a10 10 0 0 0-10-10H58a10 10 0 0 0-10 10z" fill="#f6cdd9"/>
+      <rect x="26" y="148" width="208" height="64" rx="12" fill="#f3b5c6"/>
+      <path d="M26 166q17 12 34 0t34 0 34 0 34 0 34 0 34 0" fill="none" stroke="#fff8f6" stroke-width="4" stroke-linecap="round"/>
+      <!-- tiny cat face -->
+      <g stroke="#8a4f66" stroke-width="2" stroke-linecap="round" fill="none" opacity=".75">
+        <path d="M104 186q6 6 12 0M144 186q6 6 12 0"/><path d="M126 192l4 0M127 192l3 4 3-4" stroke-width="1.6"/>
+        <path d="M84 190l-18-4M84 196l-18 2M176 190l18-4M176 196l18 2"/>
+      </g>
+      <rect x="14" y="212" width="232" height="10" rx="5" fill="#fbe3ea" stroke="#f0bccb"/>
+    </svg>
+    <p id="wishText" style="margin-top:18px"></p>
+  </section>
+
+  <!-- PAGE 4: GIFT -->
+  <section class="page" id="p4">
+    <svg class="giftbox" viewBox="0 0 120 120" aria-hidden="true">
+      <polygon points="28,42 34,12 58,42" fill="#f3b5c6"/><polygon points="33,41 36,22 48,41" fill="#fde6ec"/>
+      <polygon points="92,42 86,12 62,42" fill="#f3b5c6"/><polygon points="87,41 84,22 72,41" fill="#fde6ec"/>
+      <rect x="20" y="40" width="80" height="20" rx="4" fill="#f8d3df"/>
+      <rect x="26" y="60" width="68" height="50" rx="4" fill="#f0adc0"/>
+      <rect x="54" y="40" width="12" height="70" fill="#fff8f6"/>
+    </svg>
+    <h2 id="giftTitle"></h2>
+    <p id="giftNote"></p>
+    <div class="code lock" id="codeBox"><span id="code"></span><button class="btn" id="copy">Copy</button></div>
+    <p class="small" id="giftSmall"></p>
+  </section>
+</main>
+
+<nav>
+  <button class="btn ghost" id="back" hidden>Back</button>
+  <div class="dots" id="dots"></div>
+  <button class="btn" id="next" hidden>Next</button>
+</nav>
+
+<script>
+/* ================================================================
+   ✏️  EDIT HERE — everything about your card lives in this block
+   ================================================================ */
+const CARD = {
+  friendName: "Maomao",                       // who the card is for
+  fromName:   "Yun",                        // who it's from
+
+  coverHint:  "Tap the envelope to open",
+  messageTitle: "My birthday card for you",
+  message:
+`Happy Birthday, MAOMAOO!
+
+Thank you, maomao for every play, every call together and every compliments you gave me.
+You make my life brighter just by being in it. You lit me up during my birthday, and i want to give this birthday card for you as a thank you for that. Hidup aku ga pahit karena ketemu kamu, THANK YOUU.
+
+I hope this year is full of Happiness, good things, and i hope you win your competitions, I hope you get more alien stage merch too! You deserve all of them.`,
+
+  photoTitle: "My favorite memories from you, your compliments will always be as one of my favorites.",
+  // 1) Put your pictures in a folder called "photos" next to index.html
+  // 2) Add one line per photo below. Add or delete lines freely.
+  photos: [
+    { src: "photos1.jpeg", caption: "Look at how gorgeous you were as my wallpaper" },
+    { src: "photos2.jpeg", caption: "Definitely one of my favorite compliments in a lifetime" },
+    { src: "photos3.jpeg", caption: "Xixixi thank you for being so sweet" },
+    { src: "photos4.jpeg", caption: "I felt so special when you said this, thank youuuuuu" },
+  ],
+
+  wishTitle: "Make a wish Maomao!",
+  wishText:  "Tap the cake to blow out the candles",
+
+  giftTitle: "Oh i forgot!, one last thing before you go",
+  giftNote:  "Here’s a little something from me. Go buy yourself a new avatar okay? Think of it as my thank you for making my days better",
+  giftCode:  "RBYV4QQSNKDTWUEH",              // ← your gift card code
+  giftSmall: "Its a robux giftcard, buy yourself something nice with it kay? :>",
+
+  // Confetti and floating paw colours (soft pastels)
+  confettiColors: ["#f6b7c8", "#fbd5df", "#ffd9c7", "#e9a0b6", "#fff3f5"],
+};
+/* ================================================================
+   Below is the engine. You don't need to change anything.
+   ================================================================ */
+const $ = id => document.getElementById(id);
+const pages = [...document.querySelectorAll(".page")];
+let cur = 0, opened = false;
+
+document.title = `Happy Birthday ${CARD.friendName}!`;
+$("coverTitle").textContent = `Happy Birthday, ${CARD.friendName}`;
+$("coverHint").textContent = CARD.coverHint;
+$("msgTitle").textContent = CARD.messageTitle;
+$("photoTitle").textContent = CARD.photoTitle;
+$("wishTitle").textContent = CARD.wishTitle;
+$("wishText").textContent = CARD.wishText;
+$("giftTitle").textContent = CARD.giftTitle;
+$("giftNote").textContent = CARD.giftNote + (CARD.fromName ? ` — ${CARD.fromName}` : "");
+$("code").textContent = CARD.giftCode;
+$("giftSmall").textContent = CARD.giftSmall;
+
+// floating paw prints
+for (let i = 0; i < 14; i++) {
+  const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  s.setAttribute("viewBox", "0 0 64 64");
+  s.innerHTML = '<use href="#paw"/>';
+  const size = 20 + Math.random() * 34;
+  s.style.cssText = `left:${Math.random() * 100}%;width:${size}px;height:${size}px;fill:currentColor;` +
+    `animation-duration:${16 + Math.random() * 16}s;animation-delay:${-Math.random() * 30}s;rotate:${Math.random() * 60 - 30}deg`;
+  $("floaters").appendChild(s);
+}
+
+pages.forEach(() => $("dots").appendChild(document.createElement("i")));
+
+// photo stack
+const stack = $("stack");
+let order = CARD.photos.map((_, i) => i);
+CARD.photos.forEach(p => {
+  const el = document.createElement("div");
+  el.className = "polaroid";
+  el.innerHTML = `<div class="ph"><svg class="paw"><use href="#paw"/></svg></div><div class="cap"></div>`;
+  el.querySelector(".cap").textContent = p.caption || "";
+  const img = new Image();
+  img.onload = () => { const ph = el.querySelector(".ph"); ph.innerHTML = ""; ph.appendChild(img); };
+  img.src = p.src;
+  el.onclick = nextPhoto;
+  stack.appendChild(el);
+});
+function layoutStack() {
+  [...stack.children].forEach((el, i) => {
+    const pos = order.indexOf(i);
+    const rot = pos === 0 ? -1 : (pos % 2 ? 1 : -1) * (pos * 2.5 + 1);
+    el.style.zIndex = 100 - pos;
+    el.style.transform = `translateY(${pos * 5}px) rotate(${rot}deg) scale(${1 - pos * 0.025})`;
+    el.style.opacity = pos > 3 ? 0 : 1;
+  });
+}
+function nextPhoto() {
+  if (order.length < 2) return;
+  const top = stack.children[order[0]];
+  top.style.transform = "translateX(115%) rotate(14deg)";
+  top.style.opacity = 0;
+  setTimeout(() => { order.push(order.shift()); layoutStack(); sparkle(); }, 380);
+}
+layoutStack();
+
+// typewriter
+let typed = false;
+function typeMessage() {
+  if (typed) return; typed = true;
+  const el = $("msgText"), txt = CARD.message; let i = 0;
+  (function tick() {
+    el.textContent = txt.slice(0, ++i);
+    if (i < txt.length) setTimeout(tick, 32);
+    else el.classList.remove("cursor");
+  })();
+}
+
+// navigation
+function show(n) {
+  cur = n;
+  pages.forEach((p, i) => {
+    p.classList.toggle("active", i === n);
+    p.classList.toggle("past", i < n);
+  });
+  [...$("dots").children].forEach((d, i) => d.classList.toggle("on", i === n));
+  $("back").hidden = n === 0;
+  $("next").hidden = (n === 0 && !opened) || n === pages.length - 1;
+  if (n === 1) typeMessage();
+  if (n === 2) burst(0.5, 0.3, 30);
+  if (n === pages.length - 1) {
+    setTimeout(() => { $("codeBox").classList.remove("lock"); bigBurst(); }, 600);
+  }
+}
+$("next").onclick = () => cur < pages.length - 1 && show(cur + 1);
+$("back").onclick = () => cur > 0 && show(cur - 1);
+
+// envelope
+$("env").onclick = () => {
+  if (opened) return;
+  opened = true;
+  $("env").classList.add("open");
+  $("env").style.animation = "none";
+  $("coverHint").style.visibility = "hidden";
+  burst(0.5, 0.55, 50);
+  setTimeout(() => show(1), 1500);
+};
+
+// cake
+$("cake").onclick = () => {
+  const c = $("cake");
+  if (c.classList.contains("out")) return;
+  c.classList.add("out");
+  $("wishText").textContent = "I hope it comes true!!!!!";
+  bigBurst();
+  setTimeout(() => { $("next").hidden = false; }, 300);
+};
+
+// copy
+$("copy").onclick = async () => {
+  const btn = $("copy");
+  try { await navigator.clipboard.writeText(CARD.giftCode); }
+  catch (e) {
+    const t = document.createElement("textarea");
+    t.value = CARD.giftCode; document.body.appendChild(t); t.select();
+    document.execCommand("copy"); t.remove();
+  }
+  btn.textContent = "Copied";
+  burst(0.5, 0.6, 24);
+  setTimeout(() => btn.textContent = "Copy", 2000);
+};
+
+// swipe
+let sx = null;
+document.addEventListener("touchstart", e => sx = e.touches[0].clientX, { passive: true });
+document.addEventListener("touchend", e => {
+  if (sx === null) return;
+  const dx = e.changedTouches[0].clientX - sx; sx = null;
+  if (cur === 2 || Math.abs(dx) < 60) return;
+  if (dx < 0 && !$("next").hidden) $("next").click();
+  if (dx > 0 && !$("back").hidden) $("back").click();
+}, { passive: true });
+
+// confetti (soft petals)
+const cv = $("fx"), cx = cv.getContext("2d"); let parts = [], running = false;
+const dpr = devicePixelRatio || 1;
+function size() { cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; }
+addEventListener("resize", size); size();
+function burst(x, y, n) {
+  const cols = CARD.confettiColors;
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2, s = 3 + Math.random() * 7;
+    parts.push({ x: x * cv.width, y: y * cv.height, vx: Math.cos(a) * s * dpr, vy: (Math.sin(a) * s - 4) * dpr,
+      w: (6 + Math.random() * 6) * dpr, h: (4 + Math.random() * 4) * dpr, round: i % 3 === 0,
+      r: Math.random() * 6, vr: Math.random() * .3 - .15, c: cols[i % cols.length], life: 130 + Math.random() * 60 });
+  }
+  if (!running) { running = true; requestAnimationFrame(loop); }
+}
+function bigBurst() { burst(.2, .4, 45); burst(.8, .4, 45); burst(.5, .3, 45); }
+function sparkle() { burst(.5, .45, 12); }
+function loop() {
+  cx.clearRect(0, 0, cv.width, cv.height);
+  parts = parts.filter(p => p.life-- > 0 && p.y < cv.height + 40);
+  parts.forEach(p => {
+    p.vy += .14 * dpr; p.vx *= .99; p.vy *= .995; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+    cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.globalAlpha = Math.min(1, p.life / 40);
+    if (p.round) { cx.beginPath(); cx.ellipse(0, 0, p.w / 2, p.h / 2, 0, 0, 6.3); cx.fill(); }
+    else cx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+    cx.restore();
+  });
+  if (parts.length) requestAnimationFrame(loop); else running = false;
+}
+
+show(0);
+</script>
+</body>
+</html>
